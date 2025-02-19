@@ -2,10 +2,13 @@ trigger:
 - '*'
 
 pool:
-  name: Default
+      name: RetoAzure
+      demands:
+      - agent.name -equals MyAgent
 
 variables:
   buildConfiguration: 'Release'
+  wwwrootDir: Tailspin.SpaceGame.Web/wwwroot
 
 steps:
 - task: UseDotNet@2
@@ -14,12 +17,31 @@ steps:
     packageType: sdk
     version: '6.x'
 
-- task: Npm@1
-  displayName: 'Run npm install'
-  inputs:
-    verbose: false
+# - task: Npm@1
+#   displayName: 'Run npm install'
+#   inputs:
+#     verbose: false
+- task: UseNode@1
+      displayName: Install Node.js 16.x
+      inputs:
+        version: 16.x
 
-- script: './node_modules/.bin/node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot'
+    - script: npm cache clean --force
+      displayName: Clean NPM cache
+
+    - task: Npm@1
+      displayName: Run npm install
+      inputs:
+        verbose: false
+        arguments: --no-optional
+
+    - script: npx sass $(wwwrootDir) --no-source-map --style=compressed
+      displayName: Compile Sass assets
+
+    - script: npm install --global gulp-cli
+      displayName: Install Gulp CLI globally
+
+- script: './node_modules/.bin/node-sass $(wwwrootDir) --output Tailspin.SpaceGame.Web/wwwroot'
   displayName: 'Compile Sass assets'
 
 - task: gulp@1
