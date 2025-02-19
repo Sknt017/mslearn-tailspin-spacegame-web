@@ -22,24 +22,24 @@ steps:
 #   inputs:
 #     verbose: false
 - task: UseNode@1
-      displayName: 'Install Node'
-      inputs:
-        version: 16.x
+  displayName: 'Install Node' 
+  inputs:
+    version: 16.x
 
-    - script: npm cache clean --force
-      displayName: 'Clean NPM cache'
+- script: npm cache clean --force
+  displayName: 'Clean NPM cache'
 
-    - task: Npm@1
-      displayName: 'Run npm install'
-      inputs:
-        verbose: false
-        arguments: --no-optional
+- task: Npm@1
+  displayName: 'Run npm install'
+  inputs:
+    verbose: false
+    arguments: --no-optional
 
-    - script: npx sass $(wwwrootDir) --no-source-map --style=compressed
-      displayName: 'Compile Sass assets'
+- script: npx sass $(wwwrootDir) --no-source-map --style=compressed
+  displayName: 'Compile Sass assets'
 
-    - script: npm install --global gulp-cli
-      displayName: 'Install Gulp CLI globally'
+- script: npm install --global gulp-cli
+  displayName: 'Install Gulp CLI globally'
 
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output Tailspin.SpaceGame.Web/wwwroot'
   displayName: 'Compile Sass assets'
