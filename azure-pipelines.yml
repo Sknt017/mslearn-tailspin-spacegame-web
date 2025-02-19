@@ -2,9 +2,10 @@ trigger:
 - '*'
 
 pool:
-      name: RetoAzure
-      demands:
-      - agent.name -equals MyAgent
+    name: default
+      # name: RetoAzure
+      # demands:
+      # - agent.name -equals MyAgent
 
 variables:
   buildConfiguration: 'Release'
