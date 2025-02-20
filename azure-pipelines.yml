@@ -2,9 +2,7 @@ trigger:
 - '*'
 
 pool:
-  vmImage: 'ubuntu-20.04'
-  demands:
-  - npm
+  name: 'default'
 
 variables:
   buildConfiguration: 'Release'
@@ -17,10 +15,23 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
-- task: Npm@1
-  displayName: 'Run npm install'
+# - task: Npm@1
+#   displayName: 'Run npm install'
+#   inputs:
+#     verbose: false
+- task: UseNode@1
+  displayName: Install Node.js 16.x
   inputs:
-    verbose: false
+        version: 16.x
+
+- script: npm cache clean --force
+  displayName: Clean NPM cache
+
+- task: Npm@1
+  displayName: Run npm install
+  inputs:
+        verbose: false
+#        arguments: --no-optional
 
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
