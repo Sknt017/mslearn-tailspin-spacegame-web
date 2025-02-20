@@ -3,7 +3,7 @@ trigger:
 
 jobs:
 - job:
-  displayName: pipeline - unit tests
+  displayName: Job - code coverage
   pool:
     name: 'default'
 
