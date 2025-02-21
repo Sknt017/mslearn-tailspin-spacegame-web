@@ -7,14 +7,15 @@ pool:
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  dotnetSdkVersion: '8.x'
-  MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\[version]\Sdks'  # Reemplaza con la ruta correcta
+  dotnetSdkVersion: '8.0.406'  # Reemplaza con la versión necesaria
+  MSBuildSDKsPath: '$(Agent.ToolsDirectory)/dotnet/sdk/$(dotnetSdkVersion)/Sdks'
 
 steps:
 - task: UseDotNet@2
   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
   inputs:
     version: '$(dotnetSdkVersion)'
+
 
 - task: NuGetToolInstaller@0
   inputs:
