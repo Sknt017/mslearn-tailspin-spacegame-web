@@ -3,6 +3,8 @@ trigger:
 
 pool:
   name: 'default'
+  demands:
+  - npm
 
 variables:
   buildConfiguration: 'Release'
@@ -10,10 +12,10 @@ variables:
   dotnetSdkVersion: '6.x'
 
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-  inputs:
-    version: '$(dotnetSdkVersion)'
+# - task: UseDotNet@2
+#   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+#   inputs:
+#     version: '$(dotnetSdkVersion)'
 
 - task: NuGetToolInstaller@0
   inputs:
@@ -35,7 +37,7 @@ steps:
   displayName: Run npm install
   inputs:
     verbose: false
-    arguments: --no-optional
+    # arguments: --no-optional
 
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
@@ -47,10 +49,9 @@ steps:
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
 
-- script: |
-    echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
-  displayName: 'Set MSBuildSDKsPath'
-
+# - script: |
+#     echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
+#   displayName: 'Set MSBuildSDKsPath'
 
 - task: NuGetCommand@2
   displayName: 'Restore project dependencies'
