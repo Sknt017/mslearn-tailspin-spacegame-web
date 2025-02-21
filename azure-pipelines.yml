@@ -52,6 +52,11 @@ steps:
 #     echo ##vso[task.setvariable variable=MSBuildSDKsPath]$(Agent.ToolsDirectory)/dotnet/sdk/$(dotnetSdkVersion)/Sdks
 #   displayName: 'Set MSBuildSDKsPath'
 
+- script: |
+    echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
+  displayName: 'Set MSBuildSDKsPath'
+
+
 - task: NuGetCommand@2
   displayName: 'Restore project dependencies'
   inputs:
