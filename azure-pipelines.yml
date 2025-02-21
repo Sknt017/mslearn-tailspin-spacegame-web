@@ -8,6 +8,7 @@ variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '8.x'
+  MSBuildSDKsPath: 'C:\Program Files\dotnet\sdk\[version]\Sdks'  # Reemplaza con la ruta correcta
 
 steps:
 - task: UseDotNet@2
@@ -50,6 +51,9 @@ steps:
     echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
   displayName: 'Set MSBuildSDKsPath'
 
+- script: |
+    dotnet --info
+  displayName: 'Verificar información del SDK'
 
 - task: NuGetCommand@2
   displayName: 'Restore project dependencies'
