@@ -12,10 +12,10 @@ variables:
   dotnetSdkVersion: '6.x'
 
 steps:
-# - task: UseDotNet@2
-#   displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-#   inputs:
-#     version: '$(dotnetSdkVersion)'
+- task: UseDotNet@2
+  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+  inputs:
+    version: '$(dotnetSdkVersion)'
 
 - task: NuGetToolInstaller@0
   inputs:
@@ -53,13 +53,27 @@ steps:
 #     echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
 #   displayName: 'Set MSBuildSDKsPath'
 
-- task: NuGetCommand@2
-  displayName: 'Restore project dependencies'
+# - task: NuGetCommand@2
+#   displayName: 'Restore project dependencies'
+#   inputs:
+#     command: 'restore'
+#     restoreSolution: '**/*.sln'
+#     feedsToUse: 'select'
+#     vstsFeed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
+
+# NuGet Restore v1
+# Restores NuGet packages in preparation for a Visual Studio Build step.
+- task: NuGetRestore@1
   inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'select'
-    vstsFeed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
+    solution: '**/*.sln' # string. Required. Path to solution, packages.config, or project.json. Default: **/*.sln.
+    selectOrConfig: 'select' # 'select' | 'config'. Required. Feeds to use. Default: select.
+    feed: select # string. Optional. Use when selectOrConfig = select. Use packages from this Azure Artifacts feed. 
+    #includeNuGetOrg: true # boolean. Optional. Use when selectOrConfig = select. Use packages from NuGet.org. Default: true.
+    #nugetConfigPath: # string. Optional. Use when selectOrConfig = config. Path to NuGet.config. 
+  # Advanced
+    #noCache: false # boolean. Disable local cache. Default: false.
+    #packagesDirectory: # string. Destination directory. 
+    #verbosity: 'Detailed' # '-' | 'Quiet' | 'Normal' | 'Detailed'. Verbosity. Default: Detailed.
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
