@@ -3,8 +3,6 @@ trigger:
 
 pool:
   name: 'default'
-  demands:
-  - npm
 
 variables:
   buildConfiguration: 'Release'
@@ -17,10 +15,6 @@ steps:
   inputs:
     version: '$(dotnetSdkVersion)'
 
-- task: NuGetToolInstaller@0
-  inputs:
-    versionSpec: '5.9.1'
-
 # - task: Npm@1
 #   displayName: 'Run npm install'
 #   inputs:
@@ -28,7 +22,7 @@ steps:
 - task: UseNode@1
   displayName: Install Node.js 16.x
   inputs:
-    version: 16.x
+        version: 16.x
 
 - script: npm cache clean --force
   displayName: Clean NPM cache
@@ -36,8 +30,14 @@ steps:
 - task: Npm@1
   displayName: Run npm install
   inputs:
-    verbose: false
-    # arguments: --no-optional
+        verbose: false
+        # arguments: --no-optional
+
+- script: npx sass $(wwwrootDir) --no-source-map --style=compressed
+  displayName: Compile Sass assets
+
+- script: npm install --global gulp-cli
+  displayName: Install Gulp CLI globally
 
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
@@ -49,31 +49,11 @@ steps:
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
 
-# - script: |
-#     echo ##vso[task.setvariable variable=MSBuildSDKsPath]C:\Program Files\dotnet\sdk\[version]\Sdks
-#   displayName: 'Set MSBuildSDKsPath'
-
-# - task: NuGetCommand@2
-#   displayName: 'Restore project dependencies'
-#   inputs:
-#     command: 'restore'
-#     restoreSolution: '**/*.sln'
-#     feedsToUse: 'select'
-#     vstsFeed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
-
-# NuGet Restore v1
-# Restores NuGet packages in preparation for a Visual Studio Build step.
-- task: NuGetRestore@1
+- task: DotNetCoreCLI@2
+  displayName: 'Restore project dependencies'
   inputs:
-    solution: '**/*.sln' # string. Required. Path to solution, packages.config, or project.json. Default: **/*.sln.
-    selectOrConfig: 'select' # 'select' | 'config'. Required. Feeds to use. Default: select.
-    feed: select # string. Optional. Use when selectOrConfig = select. Use packages from this Azure Artifacts feed. 
-    #includeNuGetOrg: true # boolean. Optional. Use when selectOrConfig = select. Use packages from NuGet.org. Default: true.
-    #nugetConfigPath: # string. Optional. Use when selectOrConfig = config. Path to NuGet.config. 
-  # Advanced
-    #noCache: false # boolean. Disable local cache. Default: false.
-    #packagesDirectory: # string. Destination directory. 
-    #verbosity: 'Detailed' # '-' | 'Quiet' | 'Normal' | 'Detailed'. Verbosity. Default: Detailed.
+    command: 'restore'
+    projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
