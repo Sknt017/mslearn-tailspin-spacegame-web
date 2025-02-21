@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<!-- <Project Sdk="Microsoft.NET.Sdk.Web"> -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>  <!-- Reemplaza con tu versión de .NET -->
+    <TargetFramework>net6.0</TargetFramework>  <!-- Reemplaza con tu versión de .NET -->
   </PropertyGroup>
-</Project>
+<!-- </Project> -->
 
   <ItemGroup>
     <PackageReference Include="Tailspin.SpaceGame.Web.Models" Version="1.0.0-CI-20250221-176849" />
