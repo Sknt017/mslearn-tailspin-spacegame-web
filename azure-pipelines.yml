@@ -2,9 +2,7 @@ trigger:
 - '*'
 
 pool:
-  vmImage: 'ubuntu-20.04'
-  demands:
-  - npm
+  name: 'default'
 
 variables:
   buildConfiguration: 'Release'
@@ -21,8 +19,20 @@ steps:
   inputs:
     versionSpec: '5.9.1'
 
+# - task: Npm@1
+#   displayName: 'Run npm install'
+#   inputs:
+#     verbose: false
+- task: UseNode@1
+  displayName: Install Node.js 16.x
+  inputs:
+    version: 16.x
+
+- script: npm cache clean --force
+  displayName: Clean NPM cache
+
 - task: Npm@1
-  displayName: 'Run npm install'
+  displayName: Run npm install
   inputs:
     verbose: false
 
@@ -35,6 +45,14 @@ steps:
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
+
+- task: NuGetCommand@2
+  displayName: 'Restore project dependencies'
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+    vstsFeed: '$(System.TeamProject)/Tailspin.SpaceGame.Web.Models'
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
